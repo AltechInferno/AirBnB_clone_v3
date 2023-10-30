@@ -51,6 +51,19 @@ class DBStorage:
                     new_dict[key] = obj
         return (new_dict)
 
+    def get(self, cls, id):
+        """retrieve one object"""
+        if cls and id:
+            object = models.storage.all(cls)
+            for i, j in object.items():
+                if j.id == id:
+                    return j
+        return None
+
+    def count(self, cls=None):
+        """count the number of objects in storage"""
+        return len(models.storage.all(cls))
+
     def new(self, obj):
         """add the object to the current database session"""
         self.__session.add(obj)
@@ -64,7 +77,7 @@ class DBStorage:
         if obj is not None:
             self.__session.delete(obj)
 
-    def reload(self):
+i    def reload(self):
         """reloads data from the database"""
         Base.metadata.create_all(self.__engine)
         sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
