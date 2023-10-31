@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 """
-Contains the class DBStorage
+class DBStorage
 """
+
 
 import models
 from models.amenity import Amenity
@@ -51,19 +52,6 @@ class DBStorage:
                     new_dict[key] = obj
         return (new_dict)
 
-    def get(self, cls, id):
-        """retrieve one object"""
-        if cls and id:
-            object = models.storage.all(cls)
-            for i, j in object.items():
-                if j.id == id:
-                    return j
-        return None
-
-    def count(self, cls=None):
-        """count the number of objects in storage"""
-        return len(models.storage.all(cls))
-
     def new(self, obj):
         """add the object to the current database session"""
         self.__session.add(obj)
@@ -77,7 +65,7 @@ class DBStorage:
         if obj is not None:
             self.__session.delete(obj)
 
-i    def reload(self):
+    def reload(self):
         """reloads data from the database"""
         Base.metadata.create_all(self.__engine)
         sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
@@ -87,3 +75,16 @@ i    def reload(self):
     def close(self):
         """call remove() method on the private session attribute"""
         self.__session.remove()
+
+    def get(self, cls, id):
+        """A method to retrieve one object"""
+        if cls and id:
+            object = models.storage.all(cls)
+            for k, v in object.items():
+                if v.id == id:
+                    return v
+        return None
+
+    def count(self, cls=None):
+        """A method to count the number of objects in storage"""
+        return len(models.storage.all(cls))
