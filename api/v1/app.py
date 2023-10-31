@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Development of a REST API"""
+"""The Developnment of a REST API"""
 
 from models import storage
 from api.v1.views import app_views
@@ -16,15 +16,15 @@ app.register_blueprint(app_views)
 
 @app.teardown_appcontext
 def close_app(exc):
-    """when app closes"""
+    """when the app is close"""
     storage.close()
 
 
 @app.errorhandler(404)
 def error_handler(e):
-    """Return 404 if not found"""
-    res = {"error": "Not found"}
-    return jsonify(res), 404
+    """Return 404"""
+    data = {"error": "Not found"}
+    return jsonify(data), 404
 
 
 if __name__ == "__main__":
