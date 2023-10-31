@@ -7,7 +7,7 @@ from flask import Flask, jsonify
 import os
 from flask_cors import CORS
 
-
+# enable CORS and allow for origins:
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "0.0.0.0"}})
 app.url_map.strict_slashes = False
@@ -19,7 +19,7 @@ def close_app(exc):
     """when the app is close"""
     storage.close()
 
-
+# Error handlers fr expected app behavior:
 @app.errorhandler(404)
 def error_handler(e):
     """Return 404"""
