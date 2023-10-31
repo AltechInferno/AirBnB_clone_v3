@@ -18,18 +18,18 @@ def get_all_amenities():
 @app_views.route('/amenities/<amenity_id>', methods=['GET'])
 def get_a_amenity_with_id(amenity_id):
     """get amenity using id"""
-    answer = models.storage.get("Amenity", amenity_id)
-    if answer:
-        return jsonify(answer.to_dict())
+    res = models.storage.get("Amenity", amenity_id)
+    if res:
+        return jsonify(res.to_dict())
     abort(404)
 
 
 @app_views.route('/amenities/<amenity_id>', methods=['DELETE'])
 def delete_a_ameniity_with_id(amenity_id):
     """delete amenity using id"""
-    answer = models.storage.get("Amenity", amenity_id)
-    if answer:
-        answer.delete()
+    res = models.storage.get("Amenity", amenity_id)
+    if res:
+        res.delete()
         models.storage.save()
         return jsonify({})
     abort(404)
@@ -51,13 +51,13 @@ def add_a_amenity():
 @app_views.route('/amenities/<amenity_id>', methods=['PUT'])
 def update_a_amenity_with_id(amenity_id):
     """get amenity using id"""
-    answer = models.storage.get("Amenity", amenity_id)
-    if answer:
+    res = models.storage.get("Amenity", amenity_id)
+    if res:
         if not request.json:
             return jsonify({"error": "Not a JSON"}), 400
         for i, j in request.get_json().items():
             if i not in ['id', 'created_at', 'updated_at']:
-                setattr(answer, i, j)
-        answer.save()
-        return jsonify(answer.to_dict()), 200
+                setattr(res, i, j)
+        res.save()
+        return jsonify(res.to_dict()), 200
     abort(404)

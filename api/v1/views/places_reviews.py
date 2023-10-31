@@ -11,7 +11,7 @@ import models
 
 @app_views.route('/places/<place_id>/reviews', methods=['GET'])
 def get_all_reviews(place_id):
-    """retrieves all reviews linked to a place"""
+    """get all reviews linked to a place"""
     state = models.storage.get("Place", place_id)
     if state:
         city = models.storage.all("Review")
@@ -25,19 +25,19 @@ def get_all_reviews(place_id):
 
 @app_views.route('/reviews/<review_id>', methods=['GET'])
 def get_a_review_with_id(review_id):
-    """get a review using id"""
-    answer = models.storage.get("Review", review_id)
-    if answer:
-        return jsonify(answer.to_dict())
+    """get review using id"""
+    res = models.storage.get("Review", review_id)
+    if res:
+        return jsonify(res.to_dict())
     abort(404)
 
 
 @app_views.route('/reviews/<review_id>', methods=['DELETE'])
 def delete_a_review_with_id(review_id):
-    """delete a review using id"""
-    answer = models.storage.get("Review", review_id)
-    if answer:
-        answer.delete()
+    """delete review using id"""
+    res = models.storage.get("Review", review_id)
+    if res:
+        res.delete()
         models.storage.save()
         return jsonify({})
     abort(404)
@@ -45,7 +45,7 @@ def delete_a_review_with_id(review_id):
 
 @app_views.route('/places/<place_id>/reviews', methods=['POST'])
 def add_a_review_router(place_id):
-    """create a review"""
+    """create review"""
     if not request.json:
         return jsonify({"error": "Not a JSON"}), 400
     if 'user_id' not in request.json:
@@ -60,23 +60,23 @@ def add_a_review_router(place_id):
     if stat is None:
         abort(404)
     values = request.get_json()
-    new_state = Review(**values)
-    new_state.place_id = place_id
-    new_state.save()
-    return jsonify(new_state.to_dict()), 201
+    newState = Review(**values)
+    newState.place_id = place_id
+    newState.save()
+    return jsonify(newState.to_dict()), 201
 
 
 @app_views.route('/reviews/<review_id>', methods=['PUT'])
 def update_a_review_with_id(review_id):
-    """update a review using id"""
-    answer = models.storage.get("Review", review_id)
-    if answer:
+    """update review using id"""
+    res = models.storage.get("Review", review_id)
+    if res:
         if not request.json:
             return jsonify({"error": "Not a JSON"}), 400
-        for k, v in request.get_json().items():
-            if k not in ['id', 'user_id',
+        for i, j in request.get_json().items():
+            if i not in ['id', 'user_id',
                          'created_at', 'updated_at', 'state_id']:
-                setattr(answer, k, v)
-        answer.save()
-        return jsonify(answer.to_dict()), 200
+                setattr(res, i, j)
+        res.save()
+        return jsonify(res.to_dict()), 200
     abort(404)

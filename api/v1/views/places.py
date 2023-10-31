@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Create cities function"""
+"""Create places function"""
 
 from api.v1.views import app_views
 from flask import jsonify, abort, request
@@ -11,7 +11,7 @@ import models
 
 @app_views.route('/cities/<city_id>/places', methods=['GET'])
 def get_all_places(city_id):
-    """retrieves all places linked to a city"""
+    """get all places linked to a city"""
     state = models.storage.get("City", city_id)
     if state:
         city = models.storage.all("Place")
@@ -25,19 +25,19 @@ def get_all_places(city_id):
 
 @app_views.route('places/<place_id>', methods=['GET'])
 def get_a_place_with_id(place_id):
-    """get a place using id"""
-    answer = models.storage.get("Place", place_id)
-    if answer:
-        return jsonify(answer.to_dict())
+    """get place using id"""
+    res = models.storage.get("Place", place_id)
+    if res:
+        return jsonify(res.to_dict())
     abort(404)
 
 
 @app_views.route('places/<place_id>', methods=['DELETE'])
 def delete_a_place_with_id(place_id):
-    """delete a place using id"""
-    answer = models.storage.get("Place", place_id)
-    if answer:
-        answer.delete()
+    """delete place using id"""
+    res = models.storage.get("Place", place_id)
+    if res:
+        res.delete()
         models.storage.save()
         return jsonify({})
     abort(404)
@@ -45,7 +45,7 @@ def delete_a_place_with_id(place_id):
 
 @app_views.route('/cities/<city_id>/places', methods=['POST'])
 def add_a_place_router(city_id):
-    """create a place"""
+    """create place"""
     if not request.json:
         return jsonify({"error": "Not a JSON"}), 400
     if 'user_id' not in request.json:
@@ -60,23 +60,23 @@ def add_a_place_router(city_id):
     if stat is None:
         abort(404)
     values = request.get_json()
-    new_state = Place(**values)
-    new_state.city_id = city_id
-    new_state.save()
-    return jsonify(new_state.to_dict()), 201
+    newState = Place(**values)
+    newState.city_id = city_id
+    newState.save()
+    return jsonify(newState.to_dict()), 201
 
 
 @app_views.route('places/<place_id>', methods=['PUT'])
 def update_a_place_with_id(place_id):
-    """get a city using id"""
-    answer = models.storage.get("Place", place_id)
-    if answer:
+    """get city using id"""
+    res = models.storage.get("Place", place_id)
+    if res:
         if not request.json:
             return jsonify({"error": "Not a JSON"}), 400
-        for k, v in request.get_json().items():
-            if k not in ['id', 'user_id',
+        for i, j in request.get_json().items():
+            if i not in ['id', 'user_id',
                          'created_at', 'updated_at', 'state_id']:
-                setattr(answer, k, v)
-        answer.save()
-        return jsonify(answer.to_dict()), 200
+                setattr(res, i, j)
+        res.save()
+        return jsonify(res.to_dict()), 200
     abort(404)
