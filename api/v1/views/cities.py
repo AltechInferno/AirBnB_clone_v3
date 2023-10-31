@@ -10,7 +10,7 @@ import models
 
 @app_views.route('/states/<state_id>/cities', methods=['GET'])
 def get_all_cities(state_id):
-    """retrieves all cities linked to a state"""
+    """retrieves cities linked to a state"""
     state = models.storage.get("State", state_id)
     if state:
         city = models.storage.all("City")
@@ -24,19 +24,19 @@ def get_all_cities(state_id):
 
 @app_views.route('cities/<city_id>', methods=['GET'])
 def get_a_city_with_id(city_id):
-    """get a city using id"""
-    answer = models.storage.get("City", city_id)
-    if answer:
-        return jsonify(answer.to_dict())
+    """get city using id"""
+    res = models.storage.get("City", city_id)
+    if res:
+        return jsonify(res.to_dict())
     abort(404)
 
 
 @app_views.route('cities/<city_id>', methods=['DELETE'])
 def delete_a_city_with_id(city_id):
-    """delete a state using id"""
-    answer = models.storage.get("City", city_id)
-    if answer:
-        answer.delete()
+    """delete state using id"""
+    res = models.storage.get("City", city_id)
+    if res:
+        res.delete()
         models.storage.save()
         return jsonify({})
     abort(404)
@@ -44,7 +44,7 @@ def delete_a_city_with_id(city_id):
 
 @app_views.route('/states/<state_id>/cities', methods=['POST'])
 def add_a_city(state_id):
-    """create a city"""
+    """create city"""
     if not request.json:
         return jsonify({"error": "Not a JSON"}), 400
     if 'name' not in request.json:
@@ -53,22 +53,22 @@ def add_a_city(state_id):
     if status is None:
         abort(404)
     values = request.get_json()
-    new_state = State(**values)
-    new_state.state_id = state_id
-    new_state.save()
-    return jsonify(new_state.to_dict()), 201
+    newState = State(**values)
+    newState.state_id = state_id
+    newState.save()
+    return jsonify(newState.to_dict()), 201
 
 
 @app_views.route('cities/<city_id>', methods=['PUT'])
 def update_a_city_with_id(city_id):
-    """get a city using id"""
-    answer = models.storage.get("City", city_id)
-    if answer:
+    """get city using id"""
+    res = models.storage.get("City", city_id)
+    if res:
         if not request.json:
             return jsonify({"error": "Not a JSON"}), 400
-        for k, v in request.get_json().items():
-            if k not in ['id', 'created_at', 'updated_at', 'state_id']:
-                setattr(answer, k, v)
-        answer.save()
-        return jsonify(answer.to_dict()), 200
+        for i, j in request.get_json().items():
+            if i not in ['id', 'created_at', 'updated_at', 'state_id']:
+                setattr(res, i, j)
+        res.save()
+        return jsonify(res.to_dict()), 200
     abort(404)
